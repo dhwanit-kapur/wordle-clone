@@ -3,20 +3,57 @@ import { useState } from "react";
 const useWordle = (solution) => {
   const [turn, setTurn] = useState(0);
   const [currentGuess, setCurrentGuess] = useState("");
-  const [guesses, setGuesses] = useState([]); // array of objects created in formatGuesses function
-  const [history, setHistory] = useState(["hello", "ninja"]); // array os strings used to avoid duplication on the board
+  const [guesses, setGuesses] = useState([...Array(6)]); // array of objects created in formatGuesses function
+  const [history, setHistory] = useState([]); // array os strings used to avoid duplication on the board
   const [isCorrect, setIsCorrect] = useState(false);
 
   // format guesses into array of objects
   // eg. [{ key: "a", color: "green" }]
   const formatGuesses = () => {
-    console.log("formatting guess - ", currentGuess);
+    let solutionArray = [...solution];
+    let formattedGuess = [...currentGuess].map((l) => {
+      return { key: l, color: "gray" };
+    });
+
+    // check for green letters
+    formattedGuess.forEach((l, i) => {
+      if (solutionArray[i] === l.key) {
+        formattedGuess[i].color = "green";
+        solutionArray[i] = null;
+      }
+    });
+
+    // check for yellow letters
+    formattedGuess.forEach((l, i) => {
+      if (solutionArray.includes(l.key) && l.color !== "green") {
+        formattedGuess[i].color = "yellow";
+        solutionArray[solutionArray.indexOf(l.key)] = null;
+      }
+    });
+
+    return formattedGuess;
   };
 
   // add new guess into the guesses state
   // check and update the isCorrect flag state
   // update the count of number of turns
-  const addGuesses = () => {};
+  const addGuesses = (formattedGuess) => {
+    if (solution === currentGuess) {
+      setIsCorrect(true);
+    }
+    setGuesses((prevGuesses) => {
+      let newGuesses = [...prevGuesses];
+      newGuesses[turn] = formattedGuess;
+      return newGuesses;
+    });
+    setHistory((prevHistory) => {
+      return [...prevHistory, currentGuess];
+    });
+    setTurn((prevTurn) => {
+      return prevTurn + 1;
+    });
+    setCurrentGuess("");
+  };
 
   // handle keyup events
   const handleKeyup = ({ key }) => {
@@ -36,7 +73,9 @@ const useWordle = (solution) => {
         console.log("Length of the guess should be 5 chars long");
         return;
       }
-      formatGuesses();
+      const formatted = formatGuesses();
+      console.log(formatted);
+      addGuesses(formatted);
     }
     if (key === "Backspace") {
       setCurrentGuess((prev) => {
