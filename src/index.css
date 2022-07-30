@@ -66,6 +66,28 @@ h1 {
   animation-delay: 1.6s;
 }
 
+.row.current > div.filled {
+  animation: bounce 0.2s ease-in-out forwards;
+}
+
+/* keypad */
+
+.keypad {
+  max-width: 500px;
+  margin: 20px auto;
+}
+
+.keypad > div {
+  margin: 3px;
+  height: 55px;
+  width: 40px;
+  background: #eee;
+  display: inline-block;
+  border-radius: 6px;
+  line-height: 50px;
+  text-transform: uppercase;
+}
+
 /* keyframes animation */
 
 @keyframes flip {
@@ -89,5 +111,19 @@ h1 {
     background: var(--background);
     border-color: var(--border-color);
     /* color: #eee; */
+  }
+}
+
+@keyframes bounce {
+  0% {
+    transform: scale(1);
+    border-color: #ddd;
+  }
+  50% {
+    transform: scale(1.2);
+  }
+  100% {
+    transform: scale(1);
+    border-color: #333;
   }
 }
