@@ -4,7 +4,7 @@ const useWordle = (solution) => {
   const [turn, setTurn] = useState(0);
   const [currentGuess, setCurrentGuess] = useState("");
   const [guesses, setGuesses] = useState([...Array(6)]); // array of objects created in formatGuesses function
-  const [history, setHistory] = useState([]); // array os strings used to avoid duplication on the board
+  const [history, setHistory] = useState([]); // array of strings used to avoid duplication on the board
   const [isCorrect, setIsCorrect] = useState(false);
 
   // format guesses into array of objects
