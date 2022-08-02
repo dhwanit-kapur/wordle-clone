@@ -6,6 +6,7 @@ const useWordle = (solution) => {
   const [guesses, setGuesses] = useState([...Array(6)]); // array of objects created in formatGuesses function
   const [history, setHistory] = useState([]); // array of strings used to avoid duplication on the board
   const [isCorrect, setIsCorrect] = useState(false);
+  const [usedKeys, setUsedKeys] = useState({}); // eg. {a: 'green', b: 'gray', c: 'yellow'}
 
   // format guesses into array of objects
   // eg. [{ key: "a", color: "green" }]
@@ -52,6 +53,32 @@ const useWordle = (solution) => {
     setTurn((prevTurn) => {
       return prevTurn + 1;
     });
+    // add used keys logic
+    setUsedKeys((prevUsedKeys) => {
+      formattedGuess.map((l) => {
+        const currentColor = prevUsedKeys[l.key];
+
+        if (l.color === "green") {
+          prevUsedKeys[l.key] = "green";
+          return;
+        }
+
+        if (l.color === "yellow" && currentColor !== "green") {
+          prevUsedKeys[l.key] = "yellow";
+          return;
+        }
+
+        if (
+          l.color === "gray" &&
+          (currentColor !== "green") & (currentColor !== "yellow")
+        ) {
+          prevUsedKeys[l.key] = "gray";
+          return;
+        }
+      });
+
+      return prevUsedKeys;
+    });
     setCurrentGuess("");
   };
 
@@ -92,7 +119,7 @@ const useWordle = (solution) => {
     }
   };
 
-  return { turn, currentGuess, guesses, isCorrect, handleKeyup };
+  return { turn, currentGuess, guesses, isCorrect, usedKeys, handleKeyup };
 };
 
 export default useWordle;
